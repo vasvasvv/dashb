@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Графік результатів співробітників</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Стили для адаптивности */
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: auto;
+            padding: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 8px;
+            text-align: center;
+        }
+        input[type="number"] {
+            width: 60px;
+        }
+        @media (max-width: 600px) {
+            canvas {
+                width: 100% !important;
+                height: auto !important;
+            }
+            table, th, td {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Результати співробітників</h2>
+    <canvas id="resultsChart"></canvas>
+
+    <h3>Таблиця результатів</h3>
+    <table id="resultsTable">
+        <thead>
+            <tr>
+                <th>Ім'я</th>
+                <th>Результат</th>
+                <th>Змінити результат</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Іван</td>
+                <td class="result">50</td>
+                <td><input type="number" value="50" oninput="updateResult(this, 0)"></td>
+            </tr>
+            <tr>
+                <td>Ольга</td>
+                <td class="result">70</td>
+                <td><input type="number" value="70" oninput="updateResult(this, 1)"></td>
+            </tr>
+            <tr>
+                <td>Андрій</td>
+                <td class="result">90</td>
+                <td><input type="number" value="90" oninput="updateResult(this, 2)"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <script>
+        // Дані для графіку
+        const employeeNames = ["Іван", "Ольга", "Андрій"];
+        let employeeResults = [50, 70, 90];
+
+        // Ініціалізація графіку
+        const ctx = document.getElementById('resultsChart').getContext('2d');
+        const resultsChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: employeeNames,
+                datasets: [{
+                    label: 'Результати',
+                    data: employeeResults,
+                    backgroundColor: ['#3498db', '#e74c3c', '#2ecc71'],
+                    borderColor: ['#2980b9', '#c0392b', '#27ae60'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Функція оновлення результату
+        function updateResult(input, index) {
+            const newValue = parseInt(input.value);
+            if (!isNaN(newValue) && newValue >= 0) {
+                employeeResults[index] = newValue;
+                document.querySelectorAll('.result')[index].textContent = newValue;
+                resultsChart.data.datasets[0].data = employeeResults;
+                resultsChart.update();
+            }
+        }
+    </script>
+
+</body>
+</html>
